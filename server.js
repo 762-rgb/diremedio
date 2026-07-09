@@ -41,19 +41,21 @@ function saveData(data) {
 let data = loadData();
 if (!data.subscriptions) data.subscriptions = [];
 
-// Gerar chaves VAPID automaticamente se não existirem
-if (!data.vapidKeys) {
-    console.log("Gerando novas chaves VAPID para Web Push...");
-    const vapidKeys = webpush.generateVAPIDKeys();
-    data.vapidKeys = vapidKeys;
-    saveData(data);
-}
+// Chaves VAPID fixas (Hardcoded) para resolver o problema do Disco Efêmero do Render
+// Se fossem dinâmicas, o Render apagaria as chaves ao reiniciar, quebrando a inscrição do celular.
+const FIXED_VAPID_KEYS = {
+    publicKey: "BEl62iUYgUivxIkv69yViEuiBIa-Ib9-SkvMeAtA3LFgDzkrxZJjSgSnfckjBJuBkr3qBUYIHBQFLXYp5Nksh8U",
+    privateKey: "34x-_V1yY1fN-4tKx-H4b0WfU1BHgx2-h5l-R-0rVcw"
+};
 
-// Configurar web-push
+// Armazenar as chaves no objeto de dados em memória para manter compatibilidade com o resto do código
+data.vapidKeys = FIXED_VAPID_KEYS;
+
+// Configurar web-push com as chaves fixas
 webpush.setVapidDetails(
     'mailto:felipe@example.com',
-    data.vapidKeys.publicKey,
-    data.vapidKeys.privateKey
+    FIXED_VAPID_KEYS.publicKey,
+    FIXED_VAPID_KEYS.privateKey
 );
 
 // --- REST API Endpoints ---
