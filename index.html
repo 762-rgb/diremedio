@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Aplicação para monitorar e gerenciar os horários dos remédios do Di">
+    <meta name="theme-color" content="#1a1a2e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Remédios Di">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon-192.svg">
+    <title>🐾 Remédios do Di - Monitor de Medicamentos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="app-header">
+        <div class="header-content">
+            <div class="logo">
+                <span class="logo-icon">🐾</span>
+                <div class="logo-text">
+                    <h1>Remédios do Di</h1>
+                    <p class="subtitle">Monitor de Medicamentos</p>
+                </div>
+            </div>
+            <div class="header-clock" id="headerClock">--:--:--</div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Status Cards -->
+        <section class="status-section" aria-label="Resumo">
+            <div class="status-card status-total" id="statusTotal">
+                <div class="status-icon">💊</div>
+                <div class="status-info">
+                    <span class="status-number" id="totalMeds">0</span>
+                    <span class="status-label">Remédios Cadastrados</span>
+                </div>
+            </div>
+            <div class="status-card status-next" id="statusNext">
+                <div class="status-icon">⏰</div>
+                <div class="status-info">
+                    <span class="status-number" id="nextTime">--:--</span>
+                    <span class="status-label">Próximo Remédio</span>
+                </div>
+            </div>
+            <div class="status-card status-done" id="statusDone">
+                <div class="status-icon">✅</div>
+                <div class="status-info">
+                    <span class="status-number" id="totalDone">0</span>
+                    <span class="status-label">Doses Hoje</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Add Medication Button -->
+        <section class="action-section">
+            <button class="btn-add" id="btnAddMed" aria-label="Adicionar novo remédio">
+                <span class="btn-add-icon">+</span>
+                <span>Adicionar Remédio</span>
+            </button>
+        </section>
+
+        <!-- Medications List -->
+        <section class="meds-section" aria-label="Lista de Remédios">
+            <h2 class="section-title">
+                <span class="section-icon">📋</span>
+                Remédios Ativos
+            </h2>
+            <div class="meds-grid" id="medsGrid">
+                <!-- Medication cards will be inserted here -->
+            </div>
+            <div class="empty-state" id="emptyState">
+                <div class="empty-icon">🐶</div>
+                <h3>Nenhum remédio cadastrado</h3>
+                <p>Clique no botão acima para adicionar os remédios do Di</p>
+            </div>
+        </section>
+
+        <!-- History Section -->
+        <section class="history-section" aria-label="Histórico">
+            <h2 class="section-title">
+                <span class="section-icon">📜</span>
+                Histórico de Doses de Hoje
+            </h2>
+            <div class="history-list" id="historyList">
+                <div class="empty-state-small" id="emptyHistory">
+                    <p>Nenhuma dose administrada hoje</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Add/Edit Medication Modal -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal" id="medModal" role="dialog" aria-labelledby="modalTitle">
+            <div class="modal-header">
+                <h2 id="modalTitle">Adicionar Remédio</h2>
+                <button class="modal-close" id="btnCloseModal" aria-label="Fechar">&times;</button>
+            </div>
+            <form class="modal-form" id="medForm">
+                <input type="hidden" id="medId">
+                <div class="form-group">
+                    <label for="medName">Nome do Remédio *</label>
+                    <input type="text" id="medName" placeholder="Ex: Amoxicilina" required autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label for="medDosage">Dosagem *</label>
+                    <input type="text" id="medDosage" placeholder="Ex: 1 comprimido, 5ml, etc." required autocomplete="off">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="medInterval">Intervalo (horas) *</label>
+                        <input type="number" id="medInterval" placeholder="Ex: 8" min="1" max="72" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="medFirstDose">Primeira Dose *</label>
+                        <input type="time" id="medFirstDose" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="medDuration">Duração do Tratamento (dias)</label>
+                    <input type="number" id="medDuration" placeholder="Ex: 7 (deixe vazio para contínuo)" min="1" max="365">
+                </div>
+                <div class="form-group">
+                    <label for="medNotes">Observações</label>
+                    <textarea id="medNotes" placeholder="Ex: Dar junto com a ração, não dar em jejum..." rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="medColor">Cor do Cartão</label>
+                    <div class="color-picker" id="colorPicker">
+                        <button type="button" class="color-option selected" data-color="blue" style="--color: #3b82f6" aria-label="Azul"></button>
+                        <button type="button" class="color-option" data-color="purple" style="--color: #8b5cf6" aria-label="Roxo"></button>
+                        <button type="button" class="color-option" data-color="pink" style="--color: #ec4899" aria-label="Rosa"></button>
+                        <button type="button" class="color-option" data-color="orange" style="--color: #f97316" aria-label="Laranja"></button>
+                        <button type="button" class="color-option" data-color="green" style="--color: #22c55e" aria-label="Verde"></button>
+                        <button type="button" class="color-option" data-color="teal" style="--color: #14b8a6" aria-label="Teal"></button>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-cancel" id="btnCancel">Cancelar</button>
+                    <button type="submit" class="btn-save">Salvar Remédio</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Alert/Notification Modal -->
+    <div class="alert-overlay" id="alertOverlay">
+        <div class="alert-modal" id="alertModal">
+            <div class="alert-pulse"></div>
+            <div class="alert-icon">🔔</div>
+            <h2 class="alert-title">Hora do Remédio!</h2>
+            <p class="alert-med-name" id="alertMedName">--</p>
+            <p class="alert-dosage" id="alertDosage">--</p>
+            <p class="alert-notes" id="alertNotes"></p>
+            <div class="alert-actions">
+                <button class="btn-done" id="btnDone">✅ Dose Administrada</button>
+                <button class="btn-snooze" id="btnSnooze">⏰ Lembrar em 5 min</button>
+                <button class="btn-skip" id="btnSkip">⏭ Pular essa dose</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="confirm-overlay" id="confirmOverlay">
+        <div class="confirm-modal" id="confirmModal">
+            <div class="confirm-icon">⚠️</div>
+            <h3 id="confirmTitle">Tem certeza?</h3>
+            <p id="confirmMessage">Esta ação não pode ser desfeita.</p>
+            <div class="confirm-actions">
+                <button class="btn-cancel" id="btnConfirmCancel">Cancelar</button>
+                <button class="btn-danger" id="btnConfirmOk">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
