@@ -1003,7 +1003,7 @@
         
         try {
             // Pegar a chave pública do servidor
-            const response = await fetch(`${API_BASE_URL}/api/vapidPublicKey`);
+            const response = await fetch(`/api/vapidPublicKey`);
             if (!response.ok) return;
             const vapidPublicKey = await response.text();
             
@@ -1016,7 +1016,7 @@
             });
             
             // Enviar a inscrição para o nosso backend
-            await fetch(`${API_BASE_URL}/api/subscribe`, {
+            await fetch(`/api/subscribe`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(subscription)
