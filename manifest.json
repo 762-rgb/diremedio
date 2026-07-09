@@ -1,0 +1,24 @@
+{
+    "name": "Remédios do Di",
+    "short_name": "Remédios Di",
+    "description": "Monitor de medicamentos do Di",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#0f0f1a",
+    "theme_color": "#1a1a2e",
+    "orientation": "portrait",
+    "icons": [
+        {
+            "src": "icons/icon-192.svg",
+            "sizes": "192x192",
+            "type": "image/svg+xml",
+            "purpose": "any"
+        },
+        {
+            "src": "icons/icon-192.svg",
+            "sizes": "512x512",
+            "type": "image/svg+xml",
+            "purpose": "any"
+        }
+    ]
+}
